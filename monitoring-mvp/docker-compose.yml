@@ -1,0 +1,32 @@
+version: '2.2'
+
+services:
+
+  laconic:
+    image: gatewayfm/laconic:main
+    volumes:
+      - ./genesis.json:/root/.chibaclonkd/config/genesis.json
+      - ./config.toml:/root/.chibaclonkd/config/config.toml
+    command:
+        chibaclonkd start --gql-playground --gql-server
+    ports:
+      - 26660:26660
+
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    user: "472:0" # required starting from version >= 7.3
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./datasources:/etc/grafana/provisioning/datasources
+      - ./dashboards:/etc/grafana/provisioning/dashboards
+    restart: unless-stopped
