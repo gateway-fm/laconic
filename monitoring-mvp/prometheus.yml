@@ -10,5 +10,12 @@ scrape_configs:
     static_configs:
       - targets:
           - laconic:26660 # `laconic` host if is running via docker compose.
-          # - host.docker.internal:26660 # host machine on "docker for mac"
-          # - 192.168.3.19:26660
+          - host.docker.internal:26660 # host machine on "docker for mac"
+  - job_name: node
+    scrape_interval: 15s
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets:
+        - node-exporter:9100
+        - host.docker.internal:9100
